@@ -3,6 +3,9 @@ import speech_recognition as sr
 import datetime
 import wikipedia
 import webbrowser
+import os
+import smtplib # helps to open gmail
+from playsound import playsound
 
 engine = pyttsx3.init('sapi5')  # Microsoft Speech API
 voices = engine.getProperty('voices')
@@ -25,7 +28,7 @@ def wishMe():
     else:
         speak("Good Evening")
 
-    speak("I am Candis ma'am. Please tell me how may I help you?")
+    speak("I am Candis Sir. Please tell me how may I help you?")
 
 
 def takeCommand():
@@ -48,6 +51,13 @@ def takeCommand():
         return "None"  # None string will be returned
     return query
 
+def sendEmail(to, content):
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.ehlo()
+    server.starttls()
+    server.login('mitaligamer2002@gmail.com', 'ami@2006')
+    server.sendmail('youremail@gmail.com', to, content)
+    server.close()
 
 if __name__ == "__main__":
     wishMe()
@@ -66,5 +76,37 @@ if __name__ == "__main__":
         elif 'open youtube' in query:
             webbrowser.open("youtube.com")
 
+        elif 'open google' in query:
+            webbrowser.open("google.com")
+
+        elif 'open stackoverflow' in query:
+            webbrowser.open("stackoverflow.com")
+
+        elif 'play music' in query:
+            music_dir = 'C:\\Users\\MITALI GUPTA\\Music'
+            songs = os.listdir(music_dir)
+            print(songs)
+            os.startfile(os.path.join(music_dir, songs[0]))
+
+        # elif 'play music' in query:
+        #     playsound('titanic_ringtone.mp3')
 
 
+        elif 'the time' in query:
+            strTime = datetime.datetime.now().strftime("%H:%M:%S")
+            speak(f"Sir, the time is {strTime}")
+
+        elif 'open code' in query:
+            codePath ="C:\\Users\\MITALI GUPTA\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
+            os.startfile(codePath)
+
+        elif 'email to mitali' in query:
+            try:
+                speak("What should I say?")
+                content = takeCommand()
+                to = "mitalicwa@gmail.com"
+                sendEmail(to, content)
+                speak("Email has been sent!")
+            except Exception as e:
+                print(e)
+                speak("Sorry my friend Mitali. I am not able to send this email")
